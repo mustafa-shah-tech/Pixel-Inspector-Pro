@@ -16,3 +16,25 @@
     ^^^^^^^^^^^^^^^^^^^^^^^^^^
 AttributeError: 'Dashboard' object has no attribute 'scan_button'
 
+2026-06-29 23:06:20,491 | INFO | ============================================================
+2026-06-29 23:06:20,492 | INFO | Pixel Inspector Pro 0.1.0
+2026-06-29 23:06:20,492 | INFO | ============================================================
+2026-06-29 23:06:26,452 | CRITICAL | Traceback (most recent call last):
+  File "C:\Users\Mustafa Shah\Desktop\Pixel Inspector Pro\main.py", line 118, in <module>
+    main()
+  File "C:\Users\Mustafa Shah\Desktop\Pixel Inspector Pro\main.py", line 109, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "C:\Users\Mustafa Shah\Desktop\Pixel Inspector Pro\ui\main_window.py", line 38, in __init__
+    self.dashboard.scan_button.clicked.connect(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Dashboard' object has no attribute 'scan_button'
+
+2026-06-29 23:09:08,478 | INFO | ============================================================
+2026-06-29 23:09:08,478 | INFO | Pixel Inspector Pro 0.1.0
+2026-06-29 23:09:08,478 | INFO | ============================================================
+2026-06-29 23:09:10,417 | INFO | Application started.
+2026-06-29 23:09:47,588 | INFO | ============================================================
+2026-06-29 23:09:47,588 | INFO | Pixel Inspector Pro 0.1.0
+2026-06-29 23:09:47,588 | INFO | ============================================================
+2026-06-29 23:09:55,183 | INFO | Application started.

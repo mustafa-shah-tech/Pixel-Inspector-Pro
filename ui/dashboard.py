@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QGridLayout,
     QLabel,
     QTextEdit,
+    QPushButton,
 )
 
 from ui.widgets import Card, InfoRow, ScoreWidget
@@ -70,6 +71,13 @@ class Dashboard(QWidget):
 
         layout.addWidget(QLabel("Inspection Summary"))
         layout.addWidget(self.recommendation)
+
+        # Action Buttons
+
+        self.scan_button = QPushButton("Start Inspection")
+        self.scan_button.setMinimumHeight(45)
+
+        layout.addWidget(self.scan_button)
 
     def clear_layout(self, layout):
 
