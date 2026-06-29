@@ -1,0 +1,18 @@
+2026-06-29 17:45:46,282 | INFO | ============================================================
+2026-06-29 17:45:46,283 | INFO | Pixel Inspector Pro 0.1.0
+2026-06-29 17:45:46,283 | INFO | ============================================================
+2026-06-29 17:45:52,482 | INFO | Application started.
+2026-06-29 18:16:52,793 | INFO | ============================================================
+2026-06-29 18:16:52,793 | INFO | Pixel Inspector Pro 0.1.0
+2026-06-29 18:16:52,793 | INFO | ============================================================
+2026-06-29 18:16:54,541 | CRITICAL | Traceback (most recent call last):
+  File "C:\Users\Mustafa Shah\Desktop\Pixel Inspector Pro\main.py", line 118, in <module>
+    main()
+  File "C:\Users\Mustafa Shah\Desktop\Pixel Inspector Pro\main.py", line 109, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "C:\Users\Mustafa Shah\Desktop\Pixel Inspector Pro\ui\main_window.py", line 38, in __init__
+    self.dashboard.scan_button.clicked.connect(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Dashboard' object has no attribute 'scan_button'
+
