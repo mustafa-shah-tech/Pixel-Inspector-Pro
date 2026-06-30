@@ -116,6 +116,26 @@ PIXEL_DATABASE = {
         "tensor": "Tensor G4",
     },
 
+    "Pixel 3": {"codename": "blueline", "tensor": "N/A (Snapdragon 845)"},
+
+    "Pixel 3 XL": {"codename": "crosshatch", "tensor": "N/A (Snapdragon 845)"},
+
+    "Pixel 3a": {"codename": "sargo", "tensor": "N/A (Snapdragon 670)"},
+
+    "Pixel 3a XL": {"codename": "bonito", "tensor": "N/A (Snapdragon 670)"},
+
+    "Pixel 4": {"codename": "flame", "tensor": "N/A (Snapdragon 855)"},
+
+    "Pixel 4 XL": {"codename": "coral", "tensor": "N/A (Snapdragon 855)"},
+
+    "Pixel 4a": {"codename": "sunfish", "tensor": "N/A (Snapdragon 730G)"},
+
+    "Pixel 4a 5G": {"codename": "bramble", "tensor": "N/A (Snapdragon 765G)"},
+
+    "Pixel 5": {"codename": "redfin", "tensor": "N/A (Snapdragon 765G)"},
+
+    "Pixel 5a": {"codename": "barbet", "tensor": "N/A (Snapdragon 765G)"},
+
 }
 
 
@@ -134,9 +154,9 @@ class PixelVerifier:
         result = PixelVerificationResult()
 
         result.model = device.model
-        result.codename = device.device
+        result.codename = device.codename
         result.manufacturer = device.manufacturer
-        result.fingerprint = device.fingerprint
+        result.fingerprint = device.build_fingerprint
 
         result.bootloader_locked = security.bootloader_locked
         result.verified_boot = security.verified_boot
@@ -174,7 +194,7 @@ class PixelVerifier:
             result.expected_codename = expected["codename"]
             result.tensor_chip = expected["tensor"]
 
-            if device.device == expected["codename"]:
+            if device.codename == expected["codename"]:
 
                 result.codename_match = True
 
@@ -188,7 +208,7 @@ class PixelVerifier:
 
         # Build Fingerprint
 
-        if "google" in device.fingerprint.lower():
+        if "google" in device.build_fingerprint.lower():
 
             result.official_build = True
 

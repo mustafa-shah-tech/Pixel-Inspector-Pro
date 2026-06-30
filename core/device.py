@@ -40,7 +40,7 @@ class Device:
     score: int = 0
 
 
-class DeviceManager:
+class DeviceInspector:
     """
     Collects information from the connected device.
     """

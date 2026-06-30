@@ -11,7 +11,7 @@ from core.device import DeviceInspector
 from core.battery import BatteryInspector
 from core.display import DisplayInspector
 from core.camera import CameraInspector
-from core.cpu import CPUInspector
+from core.cpu import CpuInspector
 from core.storage import StorageInspector
 from core.network import NetworkInspector
 from core.security import SecurityInspector
@@ -51,7 +51,7 @@ class Inspector:
         self.battery = BatteryInspector()
         self.display = DisplayInspector()
         self.camera = CameraInspector()
-        self.cpu = CPUInspector()
+        self.cpu = CpuInspector()
         self.storage = StorageInspector()
         self.network = NetworkInspector()
         self.security = SecurityInspector()

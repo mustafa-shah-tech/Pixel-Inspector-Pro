@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
 )
 
 from ui.dashboard import Dashboard
-from core.device import DeviceManager
+from core.device import DeviceInspector
 
 
 class MainWindow(QMainWindow):
@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
         self.manager = None
 
         try:
-            self.manager = DeviceManager()
+            self.manager = DeviceInspector()
         except Exception as e:
             QMessageBox.warning(
                 self,

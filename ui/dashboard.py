@@ -112,7 +112,7 @@ class Dashboard(QWidget):
         )
 
         self.device_layout.addWidget(
-            InfoRow("Build", result.device.build_id)
+            InfoRow("Build", result.device.build_fingerprint)
         )
 
         # Battery

@@ -150,7 +150,7 @@ Recommendation:
 
 <tr><td>Android</td><td>{device.android_version}</td></tr>
 
-<tr><td>Build</td><td>{device.build_id}</td></tr>
+<tr><td>Build</td><td>{device.build_fingerprint}</td></tr>
 
 <tr><td>Serial</td><td>{device.serial}</td></tr>
 
