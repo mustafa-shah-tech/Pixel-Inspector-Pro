@@ -10,6 +10,8 @@ Inspect • Verify • Score • Report
 
 Built with ❤️ by **Mustafa Shah Tech**
 
+[Download Latest Release](https://github.com/mustafa-shah-tech/Pixel-Inspector-Pro/releases/latest)
+
 </div>
 
 ---
@@ -22,7 +24,7 @@ It is designed primarily for:
 
 - Buying used Pixel phones
 - Verifying authenticity
-- Detecting modified devices
+- Detecting modified or rooted devices
 - Checking hardware health
 - Generating professional inspection reports
 
@@ -32,123 +34,96 @@ It is designed primarily for:
 
 ## Device Information
 
-- Model
-- Codename
-- Manufacturer
-- Android Version
-- Build ID
-- Build Fingerprint
-- Serial Number
-
----
-
-## Battery Analysis
-
-- Battery Level
-- Charging Status
-- Health
-- Temperature
-- Voltage
-- Charge Counter
-- Cycle Count
-- Estimated Battery Capacity
-
----
-
-## Display
-
-- Resolution
-- Density
-- Refresh Rate
-- HDR Support
-
----
-
-## CPU
-
-- Processor
-- RAM
-- Architecture
-- Core Count
-
----
-
-## Storage
-
-- Total Storage
-- Used Storage
-- Free Storage
-- Usage %
-
----
-
-## Camera
-
-- Camera Count
-- Front Camera
-- Rear Camera
-- Flash
-- Autofocus
-
----
-
-## Sensors
-
-- Fingerprint
-- Gyroscope
-- Accelerometer
-- Ambient Light
-- Proximity
-
----
-
-## Security
-
-- Root Detection
-- Magisk Detection
-- Bootloader Lock
-- Verified Boot
-- Security Patch
-
----
-
-## Network
-
-- WiFi
-- Bluetooth
-- Carrier
-- USB Debugging
-- Device IP
-
----
+- Model, Codename, Manufacturer, Serial Number
+- Android Version, SDK, Build Fingerprint, Build Tags
+- Security Patch, Build Date
+- Kernel Version, Baseband Version, Bootloader Version
+- Hardware Revision
 
 ## Pixel Verification
 
-- Genuine Pixel Check
-- Model Verification
-- Codename Verification
-- Tensor Chip Verification
-- Official Build Verification
-- Authenticity Score
+- Genuine Pixel check (model, codename, manufacturer)
+- Tensor chip identification
+- Official Google build verification
+- Test-keys / custom build detection
+- GSI ROM detection (system brand mismatch)
+- Authenticity score with detailed issue breakdown
 
----
+## Battery Analysis
+
+- Level, Status, Health, Temperature, Voltage
+- Charge Counter, Charge Full, Design Capacity
+- Capacity %, Cycle Count (root-dependent)
+- Charging Type, USB Current (root-dependent)
+- Dedicated Battery Health Score
+
+## CPU & Memory
+
+- Processor, Architecture, Core Count
+- Min/Max CPU Frequency, Governor
+- GPU Model, GPU Frequency
+- RAM Total/Available, Swap Total/Free
+- Thermal Status
+
+## Storage
+
+- Total / Used / Free Storage
+- Usage %, Filesystem, Mount Point
+
+## Display
+
+- Resolution, Density, Refresh Rate
+- Estimated Screen Diagonal
+- HDR Support, Color Space (best-effort)
+- OLED Verification (heuristic, Pixel 6+)
+
+## Camera
+
+- Camera Count and IDs
+- Front / Rear / Flash / Autofocus detection
+- OIS detection
+- Camera HAL Version
+- Camera2 API level
+
+## Sensors
+
+- Accelerometer, Gyroscope, Magnetometer, Proximity, Light
+- Barometer, Fingerprint, Step Counter/Detector, Heart Rate, GPS
+
+## Network
+
+- WiFi, Bluetooth, NFC, Mobile Data, Airplane Mode
+- Carrier, SIM State, Network Type
+- USB Debugging, Device IP
+
+## Security
+
+- Root Detection (su binary)
+- Magisk, KernelSU, APatch detection
+- TWRP / OrangeFox recovery detection (best-effort)
+- Bootloader Lock State, Verified Boot State
+- SELinux/Encryption State, OEM Unlock Support
+
+## Software
+
+- Installed (user) App Count, System App Count, Disabled App Count
+- Google Play Services Version
+- Play Protect Status
 
 ## Scoring
 
-Each inspection receives:
+Every inspection receives:
 
-- Overall Score
-- Grade
-- Recommendation
-- Detailed deductions
+- Overall Score (0-100)
+- Letter Grade (A+ through F)
+- Buying Recommendation
+- Detailed Deductions List
 
 Example:
 
 ```
 Score: 96 / 100
-
 Grade: A+
-
 Recommendation:
 Excellent Buy
 ```
@@ -157,30 +132,25 @@ Excellent Buy
 
 ## Reports
 
-Pixel Inspector Pro automatically generates:
+Pixel Inspector Pro automatically generates a full HTML inspection report covering every category above, saved to the `reports/` folder.
 
-- HTML Report
-
-Future versions:
-
-- PDF
-- JSON
-- Database History
+Future versions: PDF export, JSON export, inspection history database.
 
 ---
 
 # Installation
 
+### Option 1 — Download the prebuilt EXE (recommended)
+
+Grab the latest `.exe` from [Releases](https://github.com/mustafa-shah-tech/Pixel-Inspector-Pro/releases/latest). No Python required.
+
+### Option 2 — Run from source
+
 Clone the repository
 
 ```bash
 git clone https://github.com/mustafa-shah-tech/Pixel-Inspector-Pro.git
-```
-
-Enter the project
-
-```bash
-cd PixelInspectorPro
+cd Pixel-Inspector-Pro
 ```
 
 Install dependencies
@@ -189,18 +159,7 @@ Install dependencies
 pip install -r requirements.txt
 ```
 
----
-
-# Requirements
-
-- Windows 10 / 11
-- Python 3.11+
-- Android Platform Tools (ADB)
-- USB Debugging Enabled
-
----
-
-# Running
+Run
 
 ```bash
 python main.py
@@ -208,17 +167,38 @@ python main.py
 
 ---
 
+# Requirements
+
+- Windows 10 / 11
+- Android Platform Tools (ADB) installed and available in PATH
+- USB Debugging enabled on the target Pixel device
+- If running from source: Python 3.11+
+
+---
+
+# Known Limitations
+
+A few data points require root access on Android 10+ and are not available on stock, unrooted devices:
+
+- IMEI / IMEI2 / MEID
+- Battery cycle count and design capacity (varies by OEM/device)
+- Partition table and detailed storage health
+- Pending OTA update status
+
+These are documented in the code rather than faked or guessed.
+
+---
+
 # Project Structure
 
 ```
-PixelInspectorPro/
+Pixel-Inspector-Pro/
 │
-├── core/
-├── ui/
-├── assets/
-├── reports/
-├── database/
-└── logs/
+├── core/       # ADB wrapper + all inspection modules
+├── ui/         # PySide6 desktop UI
+├── reports/    # Generated HTML reports (gitignored)
+├── logs/       # Application logs (gitignored)
+└── main.py     # Entry point
 ```
 
 ---
@@ -261,4 +241,4 @@ GitHub: https://github.com/mustafa-shah-tech
 
 Pixel Inspector Pro is an independent diagnostic tool and is not affiliated with or endorsed by Google LLC.
 
-Google, Android, and Pixel are trademarks of their respective owners.
+Google, Android, and Pixel are trademarks of their respective owners.
