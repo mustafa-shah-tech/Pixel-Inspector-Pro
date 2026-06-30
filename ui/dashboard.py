@@ -58,12 +58,18 @@ class Dashboard(QWidget):
         self.security_layout = QVBoxLayout()
         self.security_card.layout.addLayout(self.security_layout)
 
+        # Software
+        self.software_card = Card("Software")
+        self.software_layout = QVBoxLayout()
+        self.software_card.layout.addLayout(self.software_layout)
+
         grid.addWidget(self.device_card, 0, 0)
         grid.addWidget(self.battery_card, 0, 1)
         grid.addWidget(self.display_card, 1, 0)
         grid.addWidget(self.cpu_card, 1, 1)
         grid.addWidget(self.storage_card, 2, 0)
         grid.addWidget(self.security_card, 2, 1)
+        grid.addWidget(self.software_card, 3, 0)
 
         self.recommendation = QTextEdit()
         self.recommendation.setReadOnly(True)
@@ -100,6 +106,7 @@ class Dashboard(QWidget):
         self.clear_layout(self.cpu_layout)
         self.clear_layout(self.storage_layout)
         self.clear_layout(self.security_layout)
+        self.clear_layout(self.software_layout)
 
         # Device
 
@@ -222,6 +229,31 @@ class Dashboard(QWidget):
                 "Root",
                 "Yes" if result.security.rooted else "No"
             )
+        )
+
+        # Software
+
+        self.software_layout.addWidget(
+            InfoRow("Installed Apps", str(result.software.installed_apps_count))
+        )
+
+        self.software_layout.addWidget(
+            InfoRow("System Apps", str(result.software.system_apps_count))
+        )
+
+        self.software_layout.addWidget(
+            InfoRow("Play Services", result.software.play_services_version)
+        )
+
+        self.software_layout.addWidget(
+            InfoRow(
+                "Play Protect",
+                "Enabled" if result.software.play_protect_enabled else "Disabled"
+            )
+        )
+
+        self.software_layout.addWidget(
+            InfoRow("Update Status", result.software.update_status)
         )
 
         summary = []

@@ -27,6 +27,7 @@ class ReportGenerator:
         camera,
         sensors,
         network,
+        software,
         score,
     ):
 
@@ -203,6 +204,26 @@ Recommendation:
 <tr><td>Magisk</td><td>{security.magisk_installed}</td></tr>
 
 <tr><td>Security Patch</td><td>{security.security_patch}</td></tr>
+
+</table>
+
+<h2>Software</h2>
+
+<table>
+
+<tr><th>Property</th><th>Value</th></tr>
+
+<tr><td>Installed Apps</td><td>{software.installed_apps_count}</td></tr>
+
+<tr><td>System Apps</td><td>{software.system_apps_count}</td></tr>
+
+<tr><td>Disabled Apps</td><td>{software.disabled_apps_count}</td></tr>
+
+<tr><td>Play Services</td><td>{software.play_services_version}</td></tr>
+
+<tr><td>Play Protect</td><td>{software.play_protect_enabled}</td></tr>
+
+<tr><td>Update Status</td><td>{software.update_status}</td></tr>
 
 </table>
 

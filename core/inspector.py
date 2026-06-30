@@ -16,6 +16,7 @@ from core.storage import StorageInspector
 from core.network import NetworkInspector
 from core.security import SecurityInspector
 from core.sensors import SensorInspector
+from core.software import SoftwareInspector
 
 from core.pixel_verify import PixelVerifier
 
@@ -35,6 +36,7 @@ class InspectionResult:
     network: object
     security: object
     sensors: object
+    software: object
 
     pixel: object
 
@@ -56,6 +58,7 @@ class Inspector:
         self.network = NetworkInspector()
         self.security = SecurityInspector()
         self.sensors = SensorInspector()
+        self.software = SoftwareInspector()
 
         self.pixel = PixelVerifier()
 
@@ -96,6 +99,9 @@ class Inspector:
         print("Sensors...")
         sensors = self.sensors.inspect()
 
+        print("Software...")
+        software = self.software.inspect()
+
         print("Pixel Verification...")
         pixel = self.pixel.verify()
 
@@ -124,6 +130,7 @@ class Inspector:
             camera=camera,
             sensors=sensors,
             network=network,
+            software=software,
             score=score,
         )
 
@@ -139,6 +146,7 @@ class Inspector:
             network=network,
             security=security,
             sensors=sensors,
+            software=software,
             pixel=pixel,
             score=score,
             report_path=str(report_path),
