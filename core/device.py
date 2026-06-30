@@ -26,7 +26,11 @@ class Device:
     android_version: str = ""
     sdk: str = ""
     build_fingerprint: str = ""
+    build_tags: str = ""
     security_patch: str = ""
+
+    brand: str = ""
+    system_brand: str = ""
 
     cpu: str = ""
     ram: str = ""
@@ -65,8 +69,12 @@ class DeviceInspector:
         device.sdk = self.adb.sdk()
 
         device.build_fingerprint = self.adb.fingerprint()
+        device.build_tags = self.adb.getprop("ro.build.tags")
 
         device.security_patch = self.adb.security_patch()
+
+        device.brand = self.adb.getprop("ro.product.brand")
+        device.system_brand = self.adb.getprop("ro.product.system.brand")
 
         # -------- Battery --------
 

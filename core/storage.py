@@ -9,7 +9,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import logging
+
 from core.adb import ADB
+
+logger = logging.getLogger("PixelInspectorPro")
 
 
 @dataclass
@@ -52,15 +56,20 @@ class StorageInspector:
 
         info.filesystem = parts[0]
 
-        total = int(parts[1])
-        used = int(parts[2])
-        free = int(parts[3])
+        try:
+            total = int(parts[1])
+            used = int(parts[2])
+            free = int(parts[3])
 
-        info.total_gb = self._kb_to_gb(total)
-        info.used_gb = self._kb_to_gb(used)
-        info.free_gb = self._kb_to_gb(free)
+            info.total_gb = self._kb_to_gb(total)
+            info.used_gb = self._kb_to_gb(used)
+            info.free_gb = self._kb_to_gb(free)
 
-        info.usage_percent = round((used / total) * 100, 1)
+            info.usage_percent = round((used / total) * 100, 1)
+
+        except (ValueError, ZeroDivisionError) as exc:
+            logger.warning("StorageInspector: failed to parse storage values: %s", exc)
+            return StorageInfo()
 
         info.mount_point = parts[-1]
 

@@ -19,6 +19,10 @@ class SecurityInfo:
 
     rooted: bool = False
     magisk_installed: bool = False
+    kernelsu_installed: bool = False
+    apatch_installed: bool = False
+    twrp_detected: bool = False
+    orangefox_detected: bool = False
     busybox_installed: bool = False
 
     oem_unlock_supported: bool = False
@@ -113,6 +117,53 @@ class SecurityInspector:
 
         if "magisk" in packages:
             info.magisk_installed = True
+
+        # -------------------------------------------------
+        # KernelSU
+        # -------------------------------------------------
+
+        if "me.weishu.kernelsu" in packages:
+            info.kernelsu_installed = True
+        else:
+            ksu_ls = self.adb.shell("ls /data/adb/ksu").stdout.strip()
+            if ksu_ls:
+                info.kernelsu_installed = True
+
+        # -------------------------------------------------
+        # APatch
+        # -------------------------------------------------
+
+        if "me.bmax.apatch" in packages:
+            info.apatch_installed = True
+        else:
+            ap_ls = self.adb.shell("ls /data/adb/ap").stdout.strip()
+            if ap_ls:
+                info.apatch_installed = True
+
+        # -------------------------------------------------
+        # TWRP
+        # -------------------------------------------------
+
+        twrp_prop = self.adb.getprop("ro.twrp.boot")
+        if twrp_prop == "1":
+            info.twrp_detected = True
+        else:
+            bootmode = self.adb.shell("getprop ro.bootmode").stdout.strip().lower()
+            if "recovery" in bootmode:
+                sbin = self.adb.shell("ls /sbin/recovery").stdout.strip()
+                if sbin:
+                    info.twrp_detected = True
+
+        # -------------------------------------------------
+        # OrangeFox
+        # -------------------------------------------------
+
+        if "org.orangefox" in packages:
+            info.orangefox_detected = True
+        else:
+            ofox_prop = self.adb.getprop("ro.build.description").lower()
+            if "orangefox" in ofox_prop:
+                info.orangefox_detected = True
 
         # -------------------------------------------------
         # BusyBox

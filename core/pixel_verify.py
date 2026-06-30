@@ -29,6 +29,9 @@ class PixelVerificationResult:
     bootloader_locked: bool = False
     verified_boot: str = "Unknown"
 
+    build_tags: str = ""
+    gsi_suspected: bool = False
+
     authenticity_score: int = 0
 
     issues: list[str] | None = None
@@ -218,6 +221,33 @@ class PixelVerifier:
 
             result.issues.append(
                 "Non-Google build fingerprint."
+            )
+
+        # Build Tags (test-keys = custom/modified build)
+
+        result.build_tags = device.build_tags
+
+        if device.build_tags and device.build_tags.strip() == "test-keys":
+
+            score -= 25
+
+            result.issues.append(
+                "Build tags indicate test-keys (not an official release build)."
+            )
+
+        # GSI ROM detection (system_brand differs from product brand)
+
+        if (
+            device.system_brand
+            and device.brand
+            and device.system_brand.lower() != device.brand.lower()
+        ):
+
+            result.gsi_suspected = True
+            score -= 25
+
+            result.issues.append(
+                "Possible GSI ROM detected (system brand mismatch)."
             )
 
         # Bootloader

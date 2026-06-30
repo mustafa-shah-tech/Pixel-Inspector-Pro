@@ -85,13 +85,23 @@ class SensorInspector:
             "pressure" in lower or
             "barometer" in lower
         )
-        info.fingerprint = "fingerprint" in lower
         info.step_counter = "step counter" in lower
         info.step_detector = "step detector" in lower
         info.heart_rate = "heart" in lower
         info.gps = (
             "gps" in lower or
             "gnss" in lower
+        )
+
+        # Fingerprint: check BiometricManager / pm list features
+        # (sensorservice rarely exposes fingerprint sensors directly)
+        fp_features = [
+            l.strip()
+            for l in self.adb.shell("pm list features").stdout.lower().splitlines()
+        ]
+        info.fingerprint = (
+            "feature:android.hardware.fingerprint" in fp_features
+            or "feature:android.hardware.biometrics.fingerprint" in fp_features
         )
 
         return info

@@ -45,39 +45,40 @@ class CameraInspector:
         # Camera Features
         # -------------------------------------------------
 
-        features = self.adb.shell(
-            "pm list features"
-        ).stdout.lower()
+        feature_lines = [
+            l.strip()
+            for l in self.adb.shell("pm list features").stdout.lower().splitlines()
+        ]
 
         info.has_front_camera = (
-            "android.hardware.camera.front" in features
+            "feature:android.hardware.camera.front" in feature_lines
         )
 
         info.has_back_camera = (
-            "android.hardware.camera" in features
+            "feature:android.hardware.camera" in feature_lines
         )
 
         info.has_flash = (
-            "android.hardware.camera.flash" in features
+            "feature:android.hardware.camera.flash" in feature_lines
         )
 
         info.has_autofocus = (
-            "android.hardware.camera.autofocus" in features
+            "feature:android.hardware.camera.autofocus" in feature_lines
         )
 
         info.camera2_api = (
-            "android.hardware.camera.level.full" in features
+            "feature:android.hardware.camera.level.full" in feature_lines
             or
-            "android.hardware.camera.capability.manual_post_processing"
-            in features
+            "feature:android.hardware.camera.capability.manual_post_processing"
+            in feature_lines
         )
 
         info.logical_multi_camera = (
-            "logical_multi_camera" in features
+            "feature:android.hardware.camera.logical_multi_camera" in feature_lines
         )
 
         info.external_camera = (
-            "android.hardware.camera.external" in features
+            "feature:android.hardware.camera.external" in feature_lines
         )
 
         # -------------------------------------------------

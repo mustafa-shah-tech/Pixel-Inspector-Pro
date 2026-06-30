@@ -67,6 +67,22 @@ class ScoringEngine:
             score -= 20
             deductions.append("Magisk detected.")
 
+        if security.kernelsu_installed:
+            score -= 20
+            deductions.append("KernelSU detected.")
+
+        if security.apatch_installed:
+            score -= 20
+            deductions.append("APatch detected.")
+
+        if security.twrp_detected:
+            score -= 20
+            deductions.append("TWRP recovery detected.")
+
+        if security.orangefox_detected:
+            score -= 20
+            deductions.append("OrangeFox recovery detected.")
+
         if security.bootloader_locked is False:
             score -= 15
             deductions.append("Bootloader unlocked.")
@@ -74,6 +90,7 @@ class ScoringEngine:
         if security.verified_boot.lower() == "red":
             score -= 20
             deductions.append("Verified Boot RED.")
+
 
         # -----------------------------
         # Storage
