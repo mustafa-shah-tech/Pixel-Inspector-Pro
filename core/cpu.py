@@ -29,6 +29,15 @@ class CpuInfo:
     abi: str = ""
     abi2: str = ""
 
+    governor: str = ""
+    gpu_model: str = ""
+    gpu_frequency_mhz: int = 0
+
+    swap_total_gb: float = 0.0
+    swap_free_gb: float = 0.0
+
+    thermal_status: str = "Unknown"
+
 
 class CpuInspector:
 
@@ -108,6 +117,9 @@ class CpuInspector:
         total = 0
         available = 0
 
+        swap_total = 0
+        swap_free = 0
+
         for line in mem.splitlines():
 
             if line.startswith("MemTotal"):
@@ -118,10 +130,70 @@ class CpuInspector:
 
                 available = int(line.split()[1])
 
+            elif line.startswith("SwapTotal"):
+
+                swap_total = int(line.split()[1])
+
+            elif line.startswith("SwapFree"):
+
+                swap_free = int(line.split()[1])
+
         if total:
             info.total_ram_gb = self.kb_to_gb(total)
 
         if available:
             info.available_ram_gb = self.kb_to_gb(available)
+
+        if swap_total:
+            info.swap_total_gb = self.kb_to_gb(swap_total)
+
+        if swap_free:
+            info.swap_free_gb = self.kb_to_gb(swap_free)
+
+        # -------------------------------------------------
+        # CPU Governor
+        # -------------------------------------------------
+
+        info.governor = self.adb.shell(
+            "cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
+        ).stdout.strip()
+
+        # -------------------------------------------------
+        # GPU
+        # -------------------------------------------------
+
+        gpu_egl = self.adb.getprop("ro.hardware.egl")
+        if gpu_egl:
+            info.gpu_model = gpu_egl
+        else:
+            info.gpu_model = self.adb.getprop("ro.board.platform")
+
+        gpuclk = self.adb.shell(
+            "cat /sys/class/kgsl/kgsl-3d0/gpuclk"
+        ).stdout.strip()
+
+        if gpuclk.isdigit():
+            info.gpu_frequency_mhz = round(int(gpuclk) / 1_000_000)
+
+        # -------------------------------------------------
+        # Thermal Status
+        # -------------------------------------------------
+
+        THERMAL_MAP = {
+            "0": "Normal",
+            "1": "Light",
+            "2": "Moderate",
+            "3": "Severe",
+        }
+
+        try:
+            thermal = self.adb.shell("dumpsys thermalservice").stdout
+            for line in thermal.splitlines():
+                if "mStatus=" in line:
+                    val = line.split("mStatus=")[1].split()[0].strip()
+                    info.thermal_status = THERMAL_MAP.get(val, "Unknown")
+                    break
+        except Exception:
+            pass
 
         return info

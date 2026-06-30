@@ -35,6 +35,10 @@ class BatteryInfo:
 
     cycle_count: int | None = None
 
+    charging_type: str = "Unknown"
+    usb_current_ma: int | None = None
+    battery_score: int = 0
+
 
 class BatteryInspector:
 
@@ -169,5 +173,49 @@ class BatteryInspector:
         info.cycle_count = self._read_int(
             "/sys/class/power_supply/battery/cycle_count"
         )
+
+        # ---------------------------------
+        # Charging Type
+        # ---------------------------------
+
+        if info.wireless_powered:
+            info.charging_type = "Wireless"
+        elif info.ac_powered:
+            info.charging_type = "AC/Fast Charging"
+        elif info.usb_powered:
+            info.charging_type = "USB"
+        else:
+            info.charging_type = "Not Charging"
+
+        # ---------------------------------
+        # USB Current
+        # ---------------------------------
+
+        raw_ua = self._read_int("/sys/class/power_supply/usb/current_now")
+        if raw_ua is not None:
+            info.usb_current_ma = round(raw_ua / 1000)
+
+        # ---------------------------------
+        # Battery Score
+        # ---------------------------------
+
+        bscore = 100
+
+        if info.capacity_percent is not None:
+            if info.capacity_percent < 80:
+                bscore -= 30
+            elif info.capacity_percent < 90:
+                bscore -= 15
+
+        if info.health not in ("Good", "Unknown"):
+            bscore -= 20
+
+        if info.temperature > 45:
+            bscore -= 15
+
+        if info.cycle_count is not None and info.cycle_count > 500:
+            bscore -= 10
+
+        info.battery_score = max(0, min(bscore, 100))
 
         return info

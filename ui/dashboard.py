@@ -115,6 +115,18 @@ class Dashboard(QWidget):
             InfoRow("Build", result.device.build_fingerprint)
         )
 
+        self.device_layout.addWidget(
+            InfoRow("Build Date", result.device.build_date or "Unknown")
+        )
+
+        self.device_layout.addWidget(
+            InfoRow("Kernel", result.device.kernel_version or "Unknown")
+        )
+
+        self.device_layout.addWidget(
+            InfoRow("Bootloader", result.device.bootloader_version or "Unknown")
+        )
+
         # Battery
 
         self.battery_layout.addWidget(
@@ -129,6 +141,14 @@ class Dashboard(QWidget):
             InfoRow("Temp", f"{result.battery.temperature} °C")
         )
 
+        self.battery_layout.addWidget(
+            InfoRow("Charging", result.battery.charging_type)
+        )
+
+        self.battery_layout.addWidget(
+            InfoRow("Score", f"{result.battery.battery_score}/100")
+        )
+
         # Display
 
         self.display_layout.addWidget(
@@ -139,6 +159,23 @@ class Dashboard(QWidget):
             InfoRow("Refresh", f"{result.display.refresh_rate} Hz")
         )
 
+        self.display_layout.addWidget(
+            InfoRow(
+                "Diagonal",
+                f"{result.display.diagonal_inches} in"
+                if result.display.diagonal_inches is not None
+                else "Unknown"
+            )
+        )
+
+        self.display_layout.addWidget(
+            InfoRow("Color Space", result.display.color_space)
+        )
+
+        self.display_layout.addWidget(
+            InfoRow("OLED", "Yes" if result.display.oled_verified else "No")
+        )
+
         # CPU
 
         self.cpu_layout.addWidget(
@@ -147,6 +184,18 @@ class Dashboard(QWidget):
 
         self.cpu_layout.addWidget(
             InfoRow("RAM", f"{result.cpu.total_ram_gb} GB")
+        )
+
+        self.cpu_layout.addWidget(
+            InfoRow("Governor", result.cpu.governor or "Unknown")
+        )
+
+        self.cpu_layout.addWidget(
+            InfoRow("GPU", result.cpu.gpu_model or "Unknown")
+        )
+
+        self.cpu_layout.addWidget(
+            InfoRow("Thermal", result.cpu.thermal_status)
         )
 
         # Storage

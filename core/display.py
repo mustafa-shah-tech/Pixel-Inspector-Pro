@@ -7,6 +7,8 @@ Display inspection module.
 
 from __future__ import annotations
 
+import math
+import re
 from dataclasses import dataclass
 
 from core.adb import ADB
@@ -28,6 +30,10 @@ class DisplayInfo:
     hdr_supported: bool = False
 
     screen_on: bool = False
+
+    diagonal_inches: float | None = None
+    color_space: str = "Unknown"
+    oled_verified: bool = False
 
 
 class DisplayInspector:
@@ -143,5 +149,54 @@ class DisplayInspector:
             or
             "mWakefulness=Awake" in power
         )
+
+        # -----------------------------
+        # Diagonal Size
+        # -----------------------------
+
+        try:
+            dpi_match = re.search(r"(\d+)", info.density)
+            if dpi_match and info.width and info.height:
+                dpi = float(dpi_match.group(1))
+                if dpi > 0:
+                    diag_px = math.sqrt(info.width ** 2 + info.height ** 2)
+                    info.diagonal_inches = round(diag_px / dpi, 1)
+        except Exception:
+            pass
+
+        # -----------------------------
+        # Color Space
+        # -----------------------------
+
+        try:
+            sf = self.adb.shell("dumpsys SurfaceFlinger").stdout
+            for line in sf.splitlines():
+                line_lower = line.lower()
+                if "display p3" in line_lower:
+                    info.color_space = "Display P3"
+                    break
+                if "wide gamut" in line_lower or "wide_gamut" in line_lower:
+                    info.color_space = "Wide Gamut"
+                    break
+                if "srgb" in line_lower and (
+                    "colormode" in line_lower or "color space" in line_lower
+                ):
+                    info.color_space = "sRGB"
+                    break
+        except Exception:
+            pass
+
+        # -----------------------------
+        # OLED Heuristic
+        # -----------------------------
+
+        try:
+            model = self.adb.getprop("ro.product.model")
+            if "Pixel" in model:
+                m = re.search(r"Pixel\s+(\d+)", model)
+                if m and int(m.group(1)) >= 6:
+                    info.oled_verified = True
+        except Exception:
+            pass
 
         return info

@@ -8,6 +8,7 @@ Device model and device information collector.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Optional
 
 from core.adb import ADB
@@ -40,6 +41,12 @@ class Device:
 
     bootloader_locked: Optional[bool] = None
     verified_boot: str = ""
+
+    kernel_version: str = ""
+    baseband_version: str = ""
+    bootloader_version: str = ""
+    build_date: str = ""
+    hardware_revision: str = ""
 
     score: int = 0
 
@@ -135,5 +142,34 @@ class DeviceInspector:
         device.verified_boot = self.adb.getprop(
             "ro.boot.verifiedbootstate"
         )
+
+        # -------- Kernel / Baseband / Bootloader --------
+
+        device.kernel_version = self.adb.shell("uname -r").stdout.strip()
+        device.baseband_version = self.adb.getprop("gsm.version.baseband")
+        device.bootloader_version = self.adb.getprop("ro.bootloader")
+
+        # -------- Build Date --------
+
+        build_date_str = self.adb.getprop("ro.build.date")
+        if build_date_str:
+            device.build_date = build_date_str
+        else:
+            utc_str = self.adb.getprop("ro.build.date.utc")
+            if utc_str and utc_str.isdigit():
+                try:
+                    device.build_date = datetime.fromtimestamp(
+                        int(utc_str)
+                    ).strftime("%Y-%m-%d %H:%M:%S")
+                except Exception:
+                    device.build_date = utc_str
+
+        # -------- Hardware Revision --------
+
+        hw_rev = self.adb.getprop("ro.boot.hardware.revision")
+        if hw_rev:
+            device.hardware_revision = hw_rev
+        else:
+            device.hardware_revision = self.adb.getprop("ro.revision")
 
         return device

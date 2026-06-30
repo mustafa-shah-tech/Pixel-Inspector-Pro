@@ -152,7 +152,17 @@ Recommendation:
 
 <tr><td>Build</td><td>{device.build_fingerprint}</td></tr>
 
+<tr><td>Build Date</td><td>{device.build_date}</td></tr>
+
 <tr><td>Serial</td><td>{device.serial}</td></tr>
+
+<tr><td>Kernel</td><td>{device.kernel_version}</td></tr>
+
+<tr><td>Baseband</td><td>{device.baseband_version}</td></tr>
+
+<tr><td>Bootloader</td><td>{device.bootloader_version}</td></tr>
+
+<tr><td>Hardware Rev</td><td>{device.hardware_revision}</td></tr>
 
 </table>
 
@@ -171,6 +181,12 @@ Recommendation:
 <tr><td>Voltage</td><td>{battery.voltage} mV</td></tr>
 
 <tr><td>Capacity</td><td>{getattr(battery,"capacity_percent","Unknown")}</td></tr>
+
+<tr><td>Charging Type</td><td>{battery.charging_type}</td></tr>
+
+<tr><td>USB Current</td><td>{battery.usb_current_ma if battery.usb_current_ma is not None else "N/A"} mA</td></tr>
+
+<tr><td>Battery Score</td><td>{battery.battery_score}/100</td></tr>
 
 </table>
 
@@ -200,6 +216,12 @@ Recommendation:
 
 <tr><td>Refresh Rate</td><td>{display.refresh_rate} Hz</td></tr>
 
+<tr><td>Diagonal</td><td>{display.diagonal_inches if display.diagonal_inches is not None else "Unknown"} in</td></tr>
+
+<tr><td>Color Space</td><td>{display.color_space}</td></tr>
+
+<tr><td>OLED</td><td>{display.oled_verified}</td></tr>
+
 <tr><td>HDR</td><td>{display.hdr_supported}</td></tr>
 
 </table>
@@ -212,9 +234,21 @@ Recommendation:
 
 <tr><td>Cores</td><td>{cpu.cores}</td></tr>
 
+<tr><td>Governor</td><td>{cpu.governor}</td></tr>
+
+<tr><td>GPU</td><td>{cpu.gpu_model}</td></tr>
+
+<tr><td>GPU Frequency</td><td>{cpu.gpu_frequency_mhz} MHz</td></tr>
+
 <tr><td>Total RAM</td><td>{cpu.total_ram_gb} GB</td></tr>
 
 <tr><td>Available RAM</td><td>{cpu.available_ram_gb} GB</td></tr>
+
+<tr><td>Swap Total</td><td>{cpu.swap_total_gb} GB</td></tr>
+
+<tr><td>Swap Free</td><td>{cpu.swap_free_gb} GB</td></tr>
+
+<tr><td>Thermal</td><td>{cpu.thermal_status}</td></tr>
 
 </table>
 
@@ -245,6 +279,10 @@ Recommendation:
 <tr><td>Flash</td><td>{camera.has_flash}</td></tr>
 
 <tr><td>Autofocus</td><td>{camera.has_autofocus}</td></tr>
+
+<tr><td>OIS</td><td>{camera.has_ois}</td></tr>
+
+<tr><td>HAL Version</td><td>{camera.camera_hal_version if camera.camera_hal_version else "Unknown"}</td></tr>
 
 </table>
 

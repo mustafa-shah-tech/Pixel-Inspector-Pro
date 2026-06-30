@@ -28,6 +28,9 @@ class CameraInfo:
 
     external_camera: bool = False
 
+    has_ois: bool = False
+    camera_hal_version: str = ""
+
     camera_ids: list[str] = field(default_factory=list)
 
 
@@ -108,6 +111,26 @@ class CameraInspector:
         info.camera_ids = sorted(list(set(ids)))
 
         info.camera_count = len(info.camera_ids)
+
+        # -------------------------------------------------
+        # OIS
+        # -------------------------------------------------
+
+        dump_lower = dump.lower()
+        info.has_ois = (
+            "ois" in dump_lower or "opticalstabilization" in dump_lower
+        )
+
+        # -------------------------------------------------
+        # HAL Version
+        # -------------------------------------------------
+
+        for line in dump.splitlines():
+            line_s = line.strip()
+            if "Device version" in line_s or "HAL version" in line_s:
+                if ":" in line_s:
+                    info.camera_hal_version = line_s.split(":", 1)[1].strip()
+                    break
 
         # -------------------------------------------------
         # Fallback if dumpsys didn't expose IDs
