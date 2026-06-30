@@ -226,22 +226,26 @@ PixelInspectorPro/
 # Roadmap
 
 - [x] Core Inspection Engine
-- [x] Pixel Verification
+- [x] Pixel Verification (custom ROM / GSI detection)
+- [x] Root & Modification Detection (Magisk, KernelSU, APatch, TWRP, OrangeFox)
+- [x] Software Inspection Module
 - [x] HTML Reports
 - [x] Scoring Engine
-- [ ] Modern Dashboard
-- [ ] PDF Export
-- [ ] JSON Export
-- [ ] Inspection History
-- [ ] Automatic Updates
-- [ ] Dark / Light Themes
-- [ ] Multi-language Support
+- [x] Async scanning (non-blocking UI)
+- [ ] Interactive hardware tests (touchscreen, dead pixel, speaker, etc.)
+- [ ] Live performance dashboard
+- [ ] PDF / JSON export
+- [ ] Inspection history database (SQLite)
+- [ ] Companion APK for IMEI and biometric test access
+- [ ] Automatic update checker
+- [ ] Dark / Light themes
+- [ ] Multi-language support
 
 ---
 
 # License
 
-MIT License
+MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
@@ -249,9 +253,7 @@ MIT License
 
 **Mustafa Shah Tech**
 
-GitHub:
-
-https://github.com/mustafa-shah-tech
+GitHub: https://github.com/mustafa-shah-tech
 
 ---
 
@@ -259,4 +261,4 @@ https://github.com/mustafa-shah-tech
 
 Pixel Inspector Pro is an independent diagnostic tool and is not affiliated with or endorsed by Google LLC.
 
-Google, Android, and Pixel are trademarks of their respective owners.
+Google, Android, and Pixel are trademarks of their respective owners.
