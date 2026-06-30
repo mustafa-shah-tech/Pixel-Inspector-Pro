@@ -63,6 +63,9 @@ class Inspector:
 
         self.report = ReportGenerator()
 
+    def is_connected(self) -> bool:
+        return self.device.adb.is_connected()
+
     def inspect(self):
 
         print("Inspecting device...")
