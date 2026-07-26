@@ -18,35 +18,20 @@ Built with ❤️ by **Mustafa Shah Tech**
 
 ## Overview
 
-Android Inspector Pro is a Windows desktop application that performs a complete inspection of Android devices using ADB.
+Android Inspector Pro is a Windows desktop application that performs a 
+complete inspection of Android devices over ADB.
 
-It supports **multiple manufacturers** — including Google Pixel, Samsung, and any generic Android device. The app automatically detects the connected brand and runs the appropriate manufacturer-specific checks on top of the shared hardware inspection modules.
+Currently supported brands:
 
-It is designed primarily for:
+- Google Pixel (full Pixel verification, Tensor chip ID, custom ROM / GSI detection)
+- Samsung (Knox warranty bit, SoC family, KnoxGuard, dm-verity, bloatware count)
+- Generic Android (universal integrity checks for any AOSP device)
 
-- Buying used Android phones
-- Verifying authenticity across brands
-- Detecting modified, rooted, or warranty-voided devices
-- Checking hardware health
-- Generating professional inspection reports
+iPhone support is planned for a future release.
 
 ---
 
 # Features
-
-## Brand Detection
-
-Android Inspector Pro identifies the connected device manufacturer automatically and routes to the correct inspection profile:
-
-| Brand | Module | Trigger |
-|---|---|---|
-| Google | Pixel Verifier | `ro.product.manufacturer == "google"` |
-| Samsung | Samsung Inspector | `ro.product.manufacturer == "samsung"` |
-| Any other | Generic Inspector | fallback |
-
-All brands share the same hardware inspection modules (Battery, CPU, Display, Storage, Sensors, Network, Security, Software).
-
----
 
 ## Device Information
 
@@ -56,12 +41,9 @@ All brands share the same hardware inspection modules (Battery, CPU, Display, St
 - Kernel Version, Baseband Version, Bootloader Version
 - Hardware Revision
 
----
+## Brand Verification
 
-## Pixel Verification
-
-*Runs on Google Pixel devices only.*
-
+### Google Pixel
 - Genuine Pixel check (model, codename, manufacturer)
 - Tensor chip identification
 - Official Google build verification
@@ -69,35 +51,21 @@ All brands share the same hardware inspection modules (Battery, CPU, Display, St
 - GSI ROM detection (system brand mismatch)
 - Authenticity score with detailed issue breakdown
 
----
+### Samsung
+- Knox warranty bit status (0 = intact, 1 = permanently void)
+- SoC family detection (Exynos vs Snapdragon)
+- KnoxGuard status
+- dm-verity integrity check
+- Verified boot state
+- Official Samsung build verification
+- Samsung bloatware count
+- DeX support detection
 
-## Samsung Inspection
-
-*Runs on Samsung devices only.*
-
-- **One UI Version** (`ro.build.version.oneui`)
-- **SoC Family** — Exynos vs Snapdragon detection (`ro.board.platform`)
-- **Knox Warranty Bit** (`ro.boot.warranty_bit`) — 0 = intact, 1 = permanently and irrevocably voided
-- **Knox Counter Cross-check** (`ro.boot.flash.locked` + warranty bit)
-- **Samsung Root Detection** — dm-verity mode (`/proc/cmdline`), KnoxGuard status
-- **DeX Support** (`ro.build.characteristics` contains `"desktop"`)
-- **Samsung Bloatware Count** (packages under `com.samsung.`, `com.sec.`, `com.knox.`, etc.)
-- **Official Samsung Build Verification** (fingerprint + manufacturer cross-check)
-- Authenticity score with detailed issue breakdown
-
----
-
-## Generic Android Inspection
-
-*Fallback for all other manufacturers (OnePlus, Xiaomi, Nothing, Motorola, etc.).*
-
-- Official build check (test-keys detection)
+### Generic Android
 - Bootloader lock state
-- Verified Boot state
-- GSI ROM heuristic (system brand mismatch)
-- Authenticity score with detailed issue breakdown
-
----
+- Verified boot state
+- Test-keys / custom build detection
+- GSI ROM heuristic
 
 ## Battery Analysis
 
@@ -107,8 +75,6 @@ All brands share the same hardware inspection modules (Battery, CPU, Display, St
 - Charging Type, USB Current (root-dependent)
 - Dedicated Battery Health Score
 
----
-
 ## CPU & Memory
 
 - Processor, Architecture, Core Count
@@ -117,14 +83,10 @@ All brands share the same hardware inspection modules (Battery, CPU, Display, St
 - RAM Total/Available, Swap Total/Free
 - Thermal Status
 
----
-
 ## Storage
 
 - Total / Used / Free Storage
 - Usage %, Filesystem, Mount Point
-
----
 
 ## Display
 
@@ -132,8 +94,6 @@ All brands share the same hardware inspection modules (Battery, CPU, Display, St
 - Estimated Screen Diagonal
 - HDR Support, Color Space (best-effort)
 - OLED Verification (heuristic, Pixel 6+)
-
----
 
 ## Camera
 
@@ -143,22 +103,16 @@ All brands share the same hardware inspection modules (Battery, CPU, Display, St
 - Camera HAL Version
 - Camera2 API level
 
----
-
 ## Sensors
 
 - Accelerometer, Gyroscope, Magnetometer, Proximity, Light
 - Barometer, Fingerprint, Step Counter/Detector, Heart Rate, GPS
-
----
 
 ## Network
 
 - WiFi, Bluetooth, NFC, Mobile Data, Airplane Mode
 - Carrier, SIM State, Network Type
 - USB Debugging, Device IP
-
----
 
 ## Security
 
@@ -168,41 +122,37 @@ All brands share the same hardware inspection modules (Battery, CPU, Display, St
 - Bootloader Lock State, Verified Boot State
 - SELinux/Encryption State, OEM Unlock Support
 
----
-
 ## Software
 
 - Installed (user) App Count, System App Count, Disabled App Count
 - Google Play Services Version
 - Play Protect Status
 
----
-
 ## Scoring
 
 Every inspection receives:
 
-- Overall Score (0-100)
+- Overall Score (0-100) — includes brand-specific deductions
 - Letter Grade (A+ through F)
 - Buying Recommendation
 - Detailed Deductions List
 
 Example:
 
-```
 Score: 96 / 100
+
 Grade: A+
+
 Recommendation:
 Excellent Buy
-```
+
 
 ---
 
 ## Reports
 
-Android Inspector Pro automatically generates a full HTML inspection report covering every category above, saved to the `reports/` folder.
-
-Reports include a **Brand Verification** section that adapts to the detected device type — Pixel, Samsung, or Generic.
+Android Inspector Pro automatically generates a full HTML inspection report 
+covering every category above, saved to the `reports/` folder.
 
 Future versions: PDF export, JSON export, inspection history database.
 
@@ -212,7 +162,9 @@ Future versions: PDF export, JSON export, inspection history database.
 
 ### Option 1 — Download the prebuilt EXE (recommended)
 
-Grab the latest `.exe` from [Releases](https://github.com/mustafa-shah-tech/Pixel-Inspector-Pro/releases/latest). No Python required.
+Grab the latest `.exe` from 
+[Releases](https://github.com/mustafa-shah-tech/Pixel-Inspector-Pro/releases/latest). 
+No Python required.
 
 ### Option 2 — Run from source
 
@@ -248,14 +200,14 @@ python main.py
 
 # Known Limitations
 
-A few data points require root access on Android 10+ and are not available on stock, unrooted devices:
-
-- IMEI / IMEI2 / MEID
-- Battery cycle count and design capacity (varies by OEM/device)
-- Partition table and detailed storage health
-- Pending OTA update status
-
-These are documented in the code rather than faked or guessed.
+- IMEI / IMEI2 / MEID require root on Android 10+
+- Battery cycle count and design capacity are root-dependent on most devices
+- Partition table and detailed storage health require root
+- Pending OTA update status cannot be checked without root
+- Knox warranty bit requires the device to expose ro.boot.warranty_bit 
+  (available on most Samsung devices via ADB)
+- Root hiding tools (Shamiko, etc.) can conceal Magisk/KernelSU from 
+  standard ADB detection
 
 ---
 
@@ -264,27 +216,11 @@ These are documented in the code rather than faked or guessed.
 ```
 Pixel-Inspector-Pro/
 │
-├── core/
-│   ├── adb.py              # ADB wrapper
-│   ├── brand_detect.py     # Brand detection dispatch
-│   ├── pixel_verify.py     # Google Pixel verification
-│   ├── samsung_inspect.py  # Samsung-specific inspection
-│   ├── generic_inspect.py  # Generic Android fallback
-│   ├── inspector.py        # Main inspection orchestrator
-│   ├── battery.py          # Shared modules →
-│   ├── cpu.py
-│   ├── display.py
-│   ├── storage.py
-│   ├── sensors.py
-│   ├── network.py
-│   ├── security.py
-│   ├── software.py
-│   ├── scoring.py
-│   └── report.py
-├── ui/                     # PySide6 desktop UI
-├── reports/                # Generated HTML reports (gitignored)
-├── logs/                   # Application logs (gitignored)
-└── main.py                 # Entry point
+├── core/       # ADB wrapper + all inspection modules
+├── ui/         # PySide6 desktop UI
+├── reports/    # Generated HTML reports (gitignored)
+├── logs/       # Application logs (gitignored)
+└── main.py     # Entry point
 ```
 
 ---
@@ -292,14 +228,15 @@ Pixel-Inspector-Pro/
 # Roadmap
 
 - [x] Core Inspection Engine
-- [x] Pixel Verification (custom ROM / GSI detection)
+- [x] Google Pixel Verification (custom ROM / GSI detection)
+- [x] Samsung Inspection (Knox, SoC, bloatware, dm-verity)
+- [x] Generic Android Support
 - [x] Root & Modification Detection (Magisk, KernelSU, APatch, TWRP, OrangeFox)
 - [x] Software Inspection Module
 - [x] HTML Reports
-- [x] Scoring Engine
+- [x] Scoring Engine (brand deductions merged into overall score)
 - [x] Async scanning (non-blocking UI)
-- [x] **Samsung Support** (Knox, Exynos/Snapdragon, DeX, One UI, bloatware — v1.1.0)
-- [x] **Generic Android Support** (fallback verifier — v1.1.0)
+- [ ] iPhone support (planned)
 - [ ] Interactive hardware tests (touchscreen, dead pixel, speaker, etc.)
 - [ ] Live performance dashboard
 - [ ] PDF / JSON export
@@ -327,6 +264,8 @@ GitHub: https://github.com/mustafa-shah-tech
 
 ## Disclaimer
 
-Android Inspector Pro is an independent diagnostic tool and is not affiliated with or endorsed by Google LLC or Samsung Electronics Co., Ltd.
+Android Inspector Pro is an independent diagnostic tool and is not affiliated 
+with or endorsed by Google LLC, Samsung Electronics, or Apple Inc.
 
-Google, Android, Pixel, Samsung, Knox, One UI, and DeX are trademarks of their respective owners.
+Google, Android, Pixel, Samsung, Knox, and iPhone are trademarks of their 
+respective owners.
