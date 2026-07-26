@@ -1,6 +1,6 @@
 """
 Android Inspector Pro
-core/brand_detect.py
+core/brand.py
 
 Brand detection layer.
 Reads the already-populated Device object and returns a canonical

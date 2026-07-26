@@ -1,6 +1,6 @@
 """
 Android Inspector Pro
-core/pixel_verify.py
+core/pixel_inspect.py
 """
 
 from __future__ import annotations

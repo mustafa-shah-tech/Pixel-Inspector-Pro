@@ -19,8 +19,8 @@ from core.sensors import SensorInspector
 from core.software import SoftwareInspector
 
 # Brand detection
-from core.brand_detect import detect_brand
-from core.pixel_verify import PixelVerifier
+from core.brand import detect_brand
+from core.pixel_inspect import PixelVerifier
 from core.samsung_inspect import SamsungInspector
 from core.generic_inspect import GenericInspector
 
