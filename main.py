@@ -21,7 +21,7 @@ from ui.main_window import MainWindow
 
 
 APP_NAME = "Android Inspector Pro"
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.1.1"
 
 
 # ----------------------------------------------------------
