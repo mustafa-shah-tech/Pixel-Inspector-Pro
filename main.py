@@ -106,6 +106,62 @@ def main():
     app.setApplicationVersion(APP_VERSION)
     app.setOrganizationName("Mustafa Shah Tech")
 
+    app.setStyleSheet("""
+        QMainWindow, QWidget {
+            background-color: #0D0D0F;
+            color: #F5F5F7;
+            font-family: "Segoe UI", sans-serif;
+            font-size: 13px;
+        }
+
+        QScrollArea, QScrollArea > QWidget > QWidget {
+            background: transparent;
+        }
+
+        QScrollBar:vertical {
+            background: transparent;
+            width: 6px;
+            margin: 0;
+        }
+        QScrollBar::handle:vertical {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+            min-height: 30px;
+        }
+        QScrollBar::add-line:vertical,
+        QScrollBar::sub-line:vertical {
+            height: 0;
+        }
+
+        QStatusBar {
+            background: #13131A;
+            color: rgba(245, 245, 247, 0.55);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 12px;
+        }
+
+        QMessageBox {
+            background: #1C1C1E;
+            color: #F5F5F7;
+        }
+
+        QProgressBar {
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            border-radius: 4px;
+            height: 6px;
+            text-align: center;
+            color: transparent;
+        }
+        QProgressBar::chunk {
+            background: qlineargradient(
+                x1:0, y1:0, x2:1, y2:0,
+                stop:0 #0A84FF, stop:1 #30D158
+            );
+            border-radius: 4px;
+        }
+    """)
+
     window = MainWindow()
     window.show()
 
