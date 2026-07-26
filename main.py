@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Pixel Inspector Pro
+Android Inspector Pro
 Main Entry Point
 
 Author: Mustafa Shah
@@ -20,8 +20,8 @@ from PySide6.QtWidgets import QApplication, QMessageBox
 from ui.main_window import MainWindow
 
 
-APP_NAME = "Pixel Inspector Pro"
-APP_VERSION = "1.0.0"
+APP_NAME = "Android Inspector Pro"
+APP_VERSION = "1.1.0"
 
 
 # ----------------------------------------------------------
@@ -46,7 +46,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
     handlers=[
-        logging.FileHandler(LOG_DIR / "pixel_inspector.log", encoding="utf-8"),
+        logging.FileHandler(LOG_DIR / "android_inspector.log", encoding="utf-8"),
         logging.StreamHandler(sys.stdout),
     ],
 )
@@ -81,9 +81,9 @@ def exception_hook(exc_type, exc_value, exc_traceback):
     QMessageBox.critical(
         None,
         "Unexpected Error",
-        f"Pixel Inspector Pro has crashed.\n\n"
+        f"Android Inspector Pro has crashed.\n\n"
         f"A log has been written to:\n\n"
-        f"{LOG_DIR / 'pixel_inspector.log'}",
+        f"{LOG_DIR / 'android_inspector.log'}",
     )
 
 

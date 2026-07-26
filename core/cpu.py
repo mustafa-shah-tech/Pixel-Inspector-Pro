@@ -1,5 +1,5 @@
 """
-Pixel Inspector Pro
+Android Inspector Pro
 core/cpu.py
 
 CPU & Memory inspection module.

@@ -1,5 +1,5 @@
 """
-Pixel Inspector Pro
+Android Inspector Pro
 core/report.py
 """
 
@@ -29,11 +29,15 @@ class ReportGenerator:
         network,
         software,
         score,
+        brand: str = "generic",
+        brand_result=None,
     ):
 
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-        filename = self.report_dir / f"Pixel_Report_{timestamp}.html"
+        filename = self.report_dir / f"Inspector_Report_{timestamp}.html"
+
+        brand_section = self._render_brand_section(brand, brand_result)
 
         html = f"""
 <!DOCTYPE html>
@@ -43,7 +47,7 @@ class ReportGenerator:
 
 <meta charset="utf-8">
 
-<title>Pixel Inspector Pro Report</title>
+<title>Android Inspector Pro Report</title>
 
 <style>
 
@@ -102,6 +106,19 @@ h2 {{
     color:orange;
 }}
 
+.brand-badge {{
+    display:inline-block;
+    padding:4px 12px;
+    border-radius:6px;
+    font-weight:bold;
+    font-size:14px;
+    margin-bottom:8px;
+}}
+
+.brand-pixel {{ background:#e8f0fe; color:#1a73e8; }}
+.brand-samsung {{ background:#e3f2fd; color:#1565c0; }}
+.brand-generic {{ background:#f3e5f5; color:#6a1b9a; }}
+
 </style>
 
 </head>
@@ -110,7 +127,7 @@ h2 {{
 
 <div class="container">
 
-<h1>Pixel Inspector Pro</h1>
+<h1>Android Inspector Pro</h1>
 
 <p>
 Inspection Date:
@@ -166,6 +183,8 @@ Recommendation:
 <tr><td>Hardware Rev</td><td>{device.hardware_revision}</td></tr>
 
 </table>
+
+{brand_section}
 
 <h2>Battery</h2>
 
@@ -359,3 +378,180 @@ Recommendation:
         filename.write_text(html, encoding="utf-8")
 
         return filename
+
+    # ------------------------------------------------------------------
+    # Private — brand-specific HTML section
+    # ------------------------------------------------------------------
+
+    def _render_brand_section(self, brand: str, brand_result) -> str:
+        """Return the HTML block for the Brand Verification section."""
+
+        if brand_result is None:
+            return ""
+
+        if brand == "pixel":
+            return self._pixel_section(brand_result)
+
+        if brand == "samsung":
+            return self._samsung_section(brand_result)
+
+        return self._generic_section(brand_result)
+
+    # ---- Pixel ------------------------------------------------------------
+
+    def _pixel_section(self, r) -> str:
+
+        genuine_cls = "good" if r.genuine_pixel else "bad"
+        official_cls = "good" if r.official_build else "bad"
+        locked_cls = "good" if r.bootloader_locked else "warn"
+        boot_cls = "good" if r.verified_boot.lower() == "green" else "bad"
+        gsi_cls = "bad" if r.gsi_suspected else "good"
+
+        issues_html = (
+            "".join(f"<li>{i}</li>" for i in r.issues)
+            if r.issues
+            else "<li>None</li>"
+        )
+
+        return f"""
+<h2>
+  <span class="brand-badge brand-pixel">Google Pixel</span>
+  Brand Verification
+</h2>
+
+<table>
+
+<tr><th>Property</th><th>Value</th></tr>
+
+<tr><td>Genuine Pixel</td><td class="{genuine_cls}">{r.genuine_pixel}</td></tr>
+
+<tr><td>Model</td><td>{r.model}</td></tr>
+
+<tr><td>Codename</td><td>{r.codename}</td></tr>
+
+<tr><td>Expected Codename</td><td>{r.expected_codename}</td></tr>
+
+<tr><td>Codename Match</td><td class="{'good' if r.codename_match else 'bad'}">{r.codename_match}</td></tr>
+
+<tr><td>Tensor Chip</td><td>{r.tensor_chip}</td></tr>
+
+<tr><td>Official Build</td><td class="{official_cls}">{r.official_build}</td></tr>
+
+<tr><td>Build Tags</td><td>{r.build_tags}</td></tr>
+
+<tr><td>GSI Suspected</td><td class="{gsi_cls}">{r.gsi_suspected}</td></tr>
+
+<tr><td>Bootloader Locked</td><td class="{locked_cls}">{r.bootloader_locked}</td></tr>
+
+<tr><td>Verified Boot</td><td class="{boot_cls}">{r.verified_boot}</td></tr>
+
+<tr><td>Authenticity Score</td><td>{r.authenticity_score}/100</td></tr>
+
+</table>
+
+<h3>Pixel Issues</h3>
+<ul>{issues_html}</ul>
+"""
+
+    # ---- Samsung ----------------------------------------------------------
+
+    def _samsung_section(self, r) -> str:
+
+        warranty_cls = "bad" if r.warranty_voided else "good"
+        official_cls = "good" if r.official_samsung_build else "bad"
+
+        issues_html = (
+            "".join(f"<li>{i}</li>" for i in r.issues)
+            if r.issues
+            else "<li>None</li>"
+        )
+
+        return f"""
+<h2>
+  <span class="brand-badge brand-samsung">Samsung</span>
+  Brand Verification
+</h2>
+
+<table>
+
+<tr><th>Property</th><th>Value</th></tr>
+
+<tr><td>One UI Version</td><td>{r.one_ui_version or "N/A"}</td></tr>
+
+<tr><td>SoC Platform</td><td>{r.board_platform}</td></tr>
+
+<tr><td>SoC Family</td><td>{r.soc_family}</td></tr>
+
+<tr><td>Knox Warranty Bit</td><td class="{warranty_cls}">{r.warranty_bit} {'(Voided)' if r.warranty_voided else '(Intact)'}</td></tr>
+
+<tr><td>Flash Locked</td><td>{r.flash_locked}</td></tr>
+
+<tr><td>KnoxGuard</td><td>{r.knox_guard or "N/A"}</td></tr>
+
+<tr><td>dm-verity Mode</td><td>{r.dm_verity_mode}</td></tr>
+
+<tr><td>Verified Boot</td><td>{r.verified_boot}</td></tr>
+
+<tr><td>DeX Supported</td><td>{'Yes' if r.dex_supported else 'No'}</td></tr>
+
+<tr><td>Official Samsung Build</td><td class="{official_cls}">{r.official_samsung_build}</td></tr>
+
+<tr><td>Samsung Bloatware Count</td><td>{r.bloatware_count}</td></tr>
+
+<tr><td>Authenticity Score</td><td>{r.authenticity_score}/100</td></tr>
+
+</table>
+
+<h3>Samsung Issues</h3>
+<ul>{issues_html}</ul>
+"""
+
+    # ---- Generic ----------------------------------------------------------
+
+    def _generic_section(self, r) -> str:
+
+        official_cls = "good" if r.official_build else "bad"
+        gsi_cls = "bad" if r.gsi_suspected else "good"
+        locked_cls = "good" if r.bootloader_locked else "warn"
+
+        issues_html = (
+            "".join(f"<li>{i}</li>" for i in r.issues)
+            if r.issues
+            else "<li>None</li>"
+        )
+
+        return f"""
+<h2>
+  <span class="brand-badge brand-generic">Android (Generic)</span>
+  Brand Verification
+</h2>
+
+<table>
+
+<tr><th>Property</th><th>Value</th></tr>
+
+<tr><td>Manufacturer</td><td>{r.manufacturer}</td></tr>
+
+<tr><td>Model</td><td>{r.model}</td></tr>
+
+<tr><td>Official Build</td><td class="{official_cls}">{r.official_build}</td></tr>
+
+<tr><td>Build Tags</td><td>{r.build_tags}</td></tr>
+
+<tr><td>Bootloader Locked</td><td class="{locked_cls}">{r.bootloader_locked}</td></tr>
+
+<tr><td>Verified Boot</td><td>{r.verified_boot}</td></tr>
+
+<tr><td>GSI Suspected</td><td class="{gsi_cls}">{r.gsi_suspected}</td></tr>
+
+<tr><td>Brand</td><td>{r.brand}</td></tr>
+
+<tr><td>System Brand</td><td>{r.system_brand}</td></tr>
+
+<tr><td>Authenticity Score</td><td>{r.authenticity_score}/100</td></tr>
+
+</table>
+
+<h3>Issues</h3>
+<ul>{issues_html}</ul>
+"""

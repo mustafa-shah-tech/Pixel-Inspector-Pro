@@ -1,5 +1,5 @@
 """
-Pixel Inspector Pro
+Android Inspector Pro
 core/network.py
 
 Network inspection module.

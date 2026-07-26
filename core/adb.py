@@ -1,5 +1,5 @@
 """
-Pixel Inspector Pro
+Android Inspector Pro
 core/adb.py
 
 ADB communication layer.

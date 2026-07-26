@@ -1,5 +1,5 @@
 """
-Pixel Inspector Pro
+Android Inspector Pro
 core/device.py
 
 Device model and device information collector.
@@ -61,6 +61,10 @@ class DeviceInspector:
 
     def is_connected(self) -> bool:
         return self.adb.is_connected()
+
+    def inspect(self) -> Device:
+        """Alias for get_device() — consistent with all other inspector modules."""
+        return self.get_device()
 
     def get_device(self) -> Device:
 

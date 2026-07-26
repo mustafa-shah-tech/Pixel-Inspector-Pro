@@ -1,5 +1,5 @@
 """
-Pixel Inspector Pro
+Android Inspector Pro
 ui/dashboard.py
 """
 
@@ -269,6 +269,21 @@ class Dashboard(QWidget):
         summary.append(
             f"Recommendation: {result.score.recommendation}"
         )
+
+        brand_label = {
+            "pixel": "Google Pixel",
+            "samsung": "Samsung",
+            "generic": "Android (Generic)",
+        }.get(result.brand, result.brand.title())
+
+        summary.append(
+            f"Brand: {brand_label}"
+        )
+
+        if hasattr(result.brand_result, "authenticity_score"):
+            summary.append(
+                f"Authenticity Score: {result.brand_result.authenticity_score}/100"
+            )
 
         summary.append("")
 

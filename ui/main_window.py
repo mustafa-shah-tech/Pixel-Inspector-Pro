@@ -1,5 +1,5 @@
 """
-Pixel Inspector Pro
+Android Inspector Pro
 ui/main_window.py
 """
 
@@ -44,7 +44,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Pixel Inspector Pro")
+        self.setWindowTitle("Android Inspector Pro")
         self.resize(1200, 750)
 
         self.dashboard = Dashboard()

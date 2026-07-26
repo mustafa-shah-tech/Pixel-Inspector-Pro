@@ -1,5 +1,5 @@
 """
-Pixel Inspector Pro
+Android Inspector Pro
 core/utils.py
 
 Common utility functions used throughout the application.
@@ -17,8 +17,8 @@ from datetime import datetime
 # General
 # -------------------------------------------------------------------
 
-APP_NAME = "Pixel Inspector Pro"
-APP_VERSION = "1.0.0"
+APP_NAME = "Android Inspector Pro"
+APP_VERSION = "1.1.0"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

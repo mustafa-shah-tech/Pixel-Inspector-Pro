@@ -1,5 +1,5 @@
 """
-Pixel Inspector Pro
+Android Inspector Pro
 core/inspector.py
 """
 
@@ -18,7 +18,11 @@ from core.security import SecurityInspector
 from core.sensors import SensorInspector
 from core.software import SoftwareInspector
 
+# Brand detection
+from core.brand_detect import detect_brand
 from core.pixel_verify import PixelVerifier
+from core.samsung_inspect import SamsungInspector
+from core.generic_inspect import GenericInspector
 
 from core.scoring import ScoringEngine
 from core.report import ReportGenerator
@@ -38,7 +42,9 @@ class InspectionResult:
     sensors: object
     software: object
 
-    pixel: object
+    # Brand detection results
+    brand: str          # "pixel" | "samsung" | "generic"
+    brand_result: object  # PixelVerificationResult | SamsungInspectionResult | GenericInspectionResult
 
     score: object
 
@@ -60,10 +66,12 @@ class Inspector:
         self.sensors = SensorInspector()
         self.software = SoftwareInspector()
 
-        self.pixel = PixelVerifier()
+        # Brand-specific verifiers (instantiated once, used on demand)
+        self.pixel_verifier = PixelVerifier()
+        self.samsung_inspector = SamsungInspector()
+        self.generic_inspector = GenericInspector()
 
         self.scoring = ScoringEngine()
-
         self.report = ReportGenerator()
 
     def is_connected(self) -> bool:
@@ -72,7 +80,6 @@ class Inspector:
     def inspect(self):
 
         print("Inspecting device...")
-
         device = self.device.inspect()
 
         print("Battery...")
@@ -102,8 +109,25 @@ class Inspector:
         print("Software...")
         software = self.software.inspect()
 
-        print("Pixel Verification...")
-        pixel = self.pixel.verify()
+        # ---- Brand detection & routing ------------------------------------
+
+        brand = detect_brand(device)
+
+        print(f"Brand detected: {brand}")
+
+        if brand == "pixel":
+            print("Running Pixel Verification...")
+            brand_result = self.pixel_verifier.verify()
+
+        elif brand == "samsung":
+            print("Running Samsung Inspection...")
+            brand_result = self.samsung_inspector.inspect()
+
+        else:
+            print("Running Generic Inspection...")
+            brand_result = self.generic_inspector.inspect()
+
+        # ------------------------------------------------------------------
 
         print("Calculating Score...")
 
@@ -132,6 +156,8 @@ class Inspector:
             network=network,
             software=software,
             score=score,
+            brand=brand,
+            brand_result=brand_result,
         )
 
         print("Inspection Complete.")
@@ -147,7 +173,8 @@ class Inspector:
             security=security,
             sensors=sensors,
             software=software,
-            pixel=pixel,
+            brand=brand,
+            brand_result=brand_result,
             score=score,
             report_path=str(report_path),
         )
