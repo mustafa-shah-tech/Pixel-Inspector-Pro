@@ -28,10 +28,25 @@ class ScoringEngine:
         camera,
         sensors,
         network,
+        brand_result=None,
     ) -> ScoreResult:
 
         score = 100
         deductions = []
+
+        # -----------------------------
+        # Brand authenticity (from PixelVerifier / SamsungInspector / GenericInspector)
+        # Converts the brand module's internal deductions into overall score penalties
+        # so Knox-voided Samsungs and custom-ROM Pixels don't receive inflated grades.
+        # -----------------------------
+
+        if brand_result is not None and hasattr(brand_result, "authenticity_score"):
+            brand_score = brand_result.authenticity_score
+            if brand_score < 100:
+                penalty = 100 - brand_score
+                score -= penalty
+                if hasattr(brand_result, "issues") and brand_result.issues:
+                    deductions.extend(brand_result.issues)
 
         # -----------------------------
         # Battery (30 points)

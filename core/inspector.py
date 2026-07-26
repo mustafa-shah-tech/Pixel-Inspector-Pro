@@ -140,6 +140,7 @@ class Inspector:
             camera=camera,
             sensors=sensors,
             network=network,
+            brand_result=brand_result,
         )
 
         print("Generating Report...")
