@@ -32,7 +32,15 @@ class SoftwareInspector:
 
     def _count_lines(self, command: str) -> int:
         output = self.adb.shell(command).stdout
-        return len([l for l in output.splitlines() if l.strip()])
+        count = len([l for l in output.splitlines() if l.strip()])
+        if count == 0:
+            # Samsung Android 14: pm list packages may fail silently;
+            # retry with the cmd package frontend as a fallback.
+            fallback = command.replace("pm list packages", "cmd package list packages", 1)
+            if fallback != command:
+                output = self.adb.shell(fallback).stdout
+                count = len([l for l in output.splitlines() if l.strip()])
+        return count
 
     def inspect(self) -> SoftwareInfo:
 
@@ -77,6 +85,12 @@ class SoftwareInspector:
         verifier = self.adb.shell(
             "settings get global package_verifier_enable"
         ).stdout.strip()
+
+        if verifier != "1":
+            # Samsung Android 14 uses a different key
+            verifier = self.adb.shell(
+                "settings get global package_verifier_state"
+            ).stdout.strip()
 
         info.play_protect_enabled = (verifier == "1")
 

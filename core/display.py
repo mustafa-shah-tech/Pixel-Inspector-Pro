@@ -87,19 +87,47 @@ class DisplayInspector:
         for line in display.splitlines():
 
             if "mRefreshRate=" in line:
-
                 try:
-
-                    rate = line.split("mRefreshRate=")[1]
-
-                    rate = rate.split(",")[0]
-
+                    rate = line.split("mRefreshRate=")[1].split(",")[0]
                     info.refresh_rate = float(rate)
-
-                    break
-
+                    if info.refresh_rate:
+                        break
                 except Exception:
                     pass
+
+            if not info.refresh_rate and "refreshRate=" in line:
+                try:
+                    rate = line.split("refreshRate=")[1].split(",")[0]
+                    info.refresh_rate = float(rate)
+                except Exception:
+                    pass
+
+            if not info.refresh_rate and "fps=" in line:
+                try:
+                    rate = line.split("fps=")[1].split(",")[0]
+                    info.refresh_rate = float(rate)
+                except Exception:
+                    pass
+
+            # Samsung: PhysicalDisplayInfo{1080 x 2400, ... 90.000004 fps ...}
+            if not info.refresh_rate and "PhysicalDisplayInfo" in line:
+                m = re.search(r"(\d+\.\d+)\s*fps", line)
+                if not m:
+                    m = re.search(r"(\d+)\s*fps", line)
+                if m:
+                    try:
+                        info.refresh_rate = float(m.group(1))
+                    except Exception:
+                        pass
+
+        # Final fallback: wm refresh-rate (Samsung-specific shell command)
+        if not info.refresh_rate:
+            try:
+                wm_rate = self.adb.shell("wm refresh-rate").stdout.strip()
+                if wm_rate:
+                    info.refresh_rate = float(wm_rate)
+            except Exception:
+                pass
 
         # -----------------------------
         # Orientation
@@ -198,5 +226,37 @@ class DisplayInspector:
                     info.oled_verified = True
         except Exception:
             pass
+
+        # Samsung OLED heuristic
+        if not info.oled_verified:
+            try:
+                sf_dump = self.adb.shell("dumpsys SurfaceFlinger").stdout.lower()
+                if any(x in sf_dump for x in ["amoled", "oled", "dynamic amoled"]):
+                    info.oled_verified = True
+            except Exception:
+                pass
+
+        if not info.oled_verified:
+            try:
+                display_chars = self.adb.getprop("ro.build.characteristics").lower()
+                if "amoled" in display_chars or "oled" in display_chars:
+                    info.oled_verified = True
+            except Exception:
+                pass
+
+        # Fallback: known Samsung AMOLED model prefixes
+        if not info.oled_verified:
+            try:
+                model = self.adb.getprop("ro.product.model").upper()
+                samsung_oled_patterns = [
+                    r"SM-[GSFN]\d",    # Galaxy S/F/Note
+                    r"SM-A5[2-9]\d",   # A52, A53, A54, A55...
+                    r"SM-A7[2-9]\d",   # A72, A73...
+                    r"SM-F\d",         # Z Fold series
+                ]
+                if any(re.match(p, model) for p in samsung_oled_patterns):
+                    info.oled_verified = True
+            except Exception:
+                pass
 
         return info

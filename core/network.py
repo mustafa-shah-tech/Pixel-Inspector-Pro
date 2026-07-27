@@ -63,7 +63,16 @@ class NetworkInspector:
             "settings get global bluetooth_on"
         ).stdout.strip()
 
-        info.bluetooth_enabled = bt == "1"
+        # Also check for BT hardware presence via pm list features —
+        # bluetooth_on only tells us the current toggle state, not whether
+        # the hardware exists (it reads 0 when BT is simply turned off).
+        bt_features = self.adb.shell("pm list features").stdout
+        bt_hardware_present = any(
+            line.strip() == "feature:android.hardware.bluetooth"
+            for line in bt_features.splitlines()
+        )
+
+        info.bluetooth_enabled = bt == "1" or bt_hardware_present
 
         # -------------------------------------------------
         # Airplane Mode

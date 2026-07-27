@@ -163,6 +163,29 @@ class ScoringEngine:
             deductions.append("Airplane mode enabled.")
 
         # -----------------------------
+        # Security patch age
+        # -----------------------------
+
+        try:
+            from datetime import datetime
+            patch_str = getattr(security, "security_patch", "") or ""
+            if patch_str:
+                patch_date = datetime.strptime(patch_str, "%Y-%m-%d")
+                months_old = (datetime.now() - patch_date).days / 30
+                if months_old > 12:
+                    score -= 10
+                    deductions.append(
+                        f"Security patch is over 12 months old ({patch_str})."
+                    )
+                elif months_old > 6:
+                    score -= 5
+                    deductions.append(
+                        f"Security patch is over 6 months old ({patch_str})."
+                    )
+        except Exception:
+            pass
+
+        # -----------------------------
 
         score = max(0, min(score, 100))
 

@@ -29,7 +29,46 @@ _SAMSUNG_BLOAT_PREFIXES = (
     "com.wssnps.",
     "com.samsungapps.",
     "com.slsi.",
+    "com.android.chrome",
+    "com.microsoft.",
+    "com.facebook.",
+    "com.netflix.",
+    "com.spotify.",
+    "com.linkedin.",
+    "com.booking.",
 )
+
+
+# ---------------------------------------------------------------------------
+# SoC codename → marketing name lookup tables
+# ---------------------------------------------------------------------------
+
+_QUALCOMM_CODENAMES = {
+    "atoll":     "Snapdragon 720G/750G",
+    "lahaina":   "Snapdragon 888",
+    "shima":     "Snapdragon 778G",
+    "yupik":     "Snapdragon 778G",
+    "taro":      "Snapdragon 8 Gen 1",
+    "kalama":    "Snapdragon 8 Gen 3",
+    "pineapple": "Snapdragon 8 Gen 3",
+    "crow":      "Snapdragon 8s Gen 3",
+    "sun":       "Snapdragon 8 Elite",
+    "cliffs":    "Snapdragon 8s Gen 3",
+    "parrot":    "Snapdragon 4 Gen 1",
+    "holi":      "Snapdragon 695",
+    "bengal":    "Snapdragon 662",
+    "trinket":   "Snapdragon 665",
+}
+
+_EXYNOS_CODENAMES = {
+    "exynos2100": "Exynos 2100",
+    "exynos2200": "Exynos 2200",
+    "exynos1080": "Exynos 1080",
+    "exynos1280": "Exynos 1280",
+    "exynos1380": "Exynos 1380",
+    "s5e9945":    "Exynos 2400",
+    "s5e8835":    "Exynos 1380",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -92,6 +131,16 @@ class SamsungInspector:
         # ---- One UI -------------------------------------------------------
 
         result.one_ui_version = self.adb.getprop("ro.build.version.oneui")
+        try:
+            v = int(result.one_ui_version)
+            major = v // 10000
+            minor = (v % 10000) // 100
+            patch = v % 100
+            result.one_ui_version = (
+                f"{major}.{minor}.{patch}" if patch else f"{major}.{minor}"
+            )
+        except (ValueError, TypeError):
+            pass  # leave raw string if parsing fails
 
         # ---- SoC family ---------------------------------------------------
 
@@ -107,6 +156,11 @@ class SamsungInspector:
             result.soc_family = platform  # return raw if unrecognised
         else:
             result.soc_family = "Unknown"
+
+        # Codename → marketing name lookup (applied after raw family set)
+        marketing_name = _QUALCOMM_CODENAMES.get(p) or _EXYNOS_CODENAMES.get(p)
+        if marketing_name:
+            result.soc_family = marketing_name
 
         # ---- Knox warranty bit --------------------------------------------
 
@@ -200,7 +254,7 @@ class SamsungInspector:
 
         # ---- Samsung bloatware count --------------------------------------
 
-        pkg_output = self.adb.shell("pm list packages").stdout
+        pkg_output = self.adb.shell("pm list packages -s").stdout
         bloat = 0
 
         for line in pkg_output.splitlines():
